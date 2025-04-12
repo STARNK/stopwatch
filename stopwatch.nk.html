@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .stopwatch {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        #time {
+            font-size: 50px;
+            font-weight: bold;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="stopwatch">
+        <div id="time">00:00:00</div>
+        <div class="buttons">
+            <button id="startBtn">Start</button>
+            <button id="stopBtn" disabled>Stop</button>
+            <button id="resetBtn" disabled>Reset</button>
+        </div>
+    </div>
+
+    <script>
+        let timer;
+        let seconds = 0;
+        let minutes = 0;
+        let hours = 0;
+        let isRunning = false;
+
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const timeDisplay = document.getElementById('time');
+
+        function updateTime() {
+            seconds++;
+            if (seconds === 60) {
+                seconds = 0;
+                minutes++;
+            }
+            if (minutes === 60) {
+                minutes = 0;
+                hours++;
+            }
+
+            timeDisplay.textContent = formatTime(hours, minutes, seconds);
+        }
+
+        function formatTime(hours, minutes, seconds) {
+            return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        }
+
+        function pad(unit) {
+            return unit < 10 ? '0' + unit : unit;
+        }
+
+        startBtn.addEventListener('click', () => {
+            if (!isRunning) {
+                isRunning = true;
+                timer = setInterval(updateTime, 1000);
+                startBtn.textContent = 'Pause';
+                stopBtn.disabled = false;
+                resetBtn.disabled = false;
+            } else {
+                isRunning = false;
+                clearInterval(timer);
+                startBtn.textContent = 'Resume';
+            }
+        });
+
+        stopBtn.addEventListener('click', () => {
+            isRunning = false;
+            clearInterval(timer);
+            startBtn.textContent = 'Resume';
+        });
+
+        resetBtn.addEventListener('click', () => {
+            isRunning = false;
+            clearInterval(timer);
+            seconds = 0;
+            minutes = 0;
+            hours = 0;
+            timeDisplay.textContent = '00:00:00';
+            startBtn.textContent = 'Start';
+            stopBtn.disabled = true;
+            resetBtn.disabled = true;
+        });
+    </script>
+</body>
+</html>
